@@ -1,0 +1,6 @@
+a|v|v|w
+i|f|a|u
+q|u|k|q
+b|n|i|d
+Generated the most number of times (2 times): a i q u v 
+Generated the least number of times (0 times): c e g h j l m o p r s t x y z 
