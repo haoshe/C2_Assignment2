@@ -1,5 +1,7 @@
 package C2_A2_Q2;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +29,10 @@ Generated the least number of times (0 times): a c d e i k l n q s t v x
  */
 
 public class Question2 {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
+        // instantiate an object of PrintWriter class. In its constructor parameter, we specify our file name as "output.tex"
+        // it will throw a "FileNotFoundException"
+       PrintWriter out = new PrintWriter("output.txt");
         // create an array list, containing all lower case letters, from a to z
         List<Character> charArray = new ArrayList<>();
         // create a hash map, for counting most and least randomly picked letters
@@ -56,19 +61,47 @@ public class Question2 {
             map.put(c, map.get(c)+1);
             // if the charCounter is not dividable by 4, the system prints out letters followed by a "|"
             if(charCounter%4 != 0){
-                System.out.print(charArray.get(index)+"|");
+                out.print(charArray.get(index)+"|");
             }else{
                 // when it is dividable by 4,
                 // which means it is the 4th letter, the system then prints out the letter followed by "\n"
-                System.out.print(charArray.get(index)+"\n");
+                out.print(charArray.get(index)+"\n");
             }
             // decrease counter by one
             counter--;
             // increase charCounter by one
             charCounter++;
         }
-        // the method I created takes in the map object, counting the most picked and the least picked letters in the map object, and print them out
-        getLetterFrequency(map);
+        // the method I created takes in the map object, counting the most picked and the least picked letters in the map object,
+        // put the two numbers in an array, index 0 is max, index 1 is min, and return it.
+        int[] maxAndMin = getLetterFrequency(map);
+        // use printf method to print the dynamic max value in a string. % is a placeholder, d means digit
+        // maxAndMin[0] value is max, the most picked letter
+        out.printf("Generated the most number of times (%d times): ", maxAndMin[0]);
+        // loop through the map, find out which key/keys have the largest value, print them out.
+        for(Map.Entry<Character,Integer> entry : map.entrySet()) {
+            // when the value equals to max, means the key is randomly picked most of the time
+            if (entry.getValue() == maxAndMin[0]) {
+                // print the key(letter) out, followed by a space
+                out.print(entry.getKey() + " ");
+            }
+        }
+        // print a line to separate the two results
+        out.println();
+        // use printf method to print the dynamic min value in a string. % is a placeholder, d means digit
+        // maxAndMin[1] value is min, the least picked letter
+        out.printf("Generated the least number of times (%d times): ", maxAndMin[1]);
+        // loop through the map again, find out which key/keys have the lowest value, print them out
+        for(Map.Entry<Character, Integer> entry : map.entrySet()) {
+            // when the value equals to min, means the key is randomly picked least of times, or not being picked at all.
+            // in such case, the value of that key will be zero.
+            if (entry.getValue() == maxAndMin[1]) {
+                // print the key(letter) out, followed by a space
+                out.print(entry.getKey() + " ");
+            }
+        }
+        // close the printWriter object.
+        out.close();
     }
 
     // create a method, the method takes two integers as arguments, and return a random number with the two numbers inclusively.
@@ -80,8 +113,9 @@ public class Question2 {
         return (int)Math.floor(Math.random()*(max-min+1)+min);
     }
 
-    // create a method, takes in a map object, counting the most picked and the least picked letters in the map object, and print them out
-    private static void getLetterFrequency(Map<Character, Integer> map){
+    // create a method, takes in a map object, counting the most picked and the least picked letters in the map object,
+    // put them in an array, and return the array.
+    private static int[] getLetterFrequency(Map<Character, Integer> map) {
         // initialize a maximum value
         int max = Integer.MIN_VALUE;
         // initialize a minimum value
@@ -89,38 +123,17 @@ public class Question2 {
         // loop through the map, find out the largest value and the smallest value in the map
         // the key with the largest value has the highest random picking rate
         // the key with the smallest value has the lowest random picking rate
-        for(Map.Entry<Character,Integer> entry : map.entrySet()){
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
             // when max value is smaller than each value, set the max value to that value
-            if(max < entry.getValue()){
+            if (max < entry.getValue()) {
                 max = entry.getValue();
             }
             // when min value is smaller than each value, set the min value to that value
-            if(min > entry.getValue()){
+            if (min > entry.getValue()) {
                 min = entry.getValue();
             }
         }
-        // use printf method to print the dynamic max value in a string. % is a placeholder, d means digit
-        System.out.printf("Generated the most number of times (%d times): ", max);
-        // loop through the map, find out which key/keys have the largest value, print them out.
-        for(Map.Entry<Character,Integer> entry : map.entrySet()){
-            // when the value equals to max, means the key is randomly picked most of the times
-            if(entry.getValue() == max){
-                // print the key(letter) out, followed by a space
-                System.out.print(entry.getKey()+" ");
-            }
-        }
-        // print a line to separate the two results
-        System.out.println();
-        // use printf method to print the dynamic min value in a string. % is a placeholder, d means digit
-        System.out.printf("Generated the least number of times (%d times): ", min);
-        // loop through the map again, find out which key/keys have the lowest value, print them out
-        for(Map.Entry<Character, Integer> entry : map.entrySet()){
-            // when the value equals to min, means the key is randomly picked least of times, or not being picked at all.
-            // in such case, the value of that key will be zero.
-            if(entry.getValue() == min){
-                // print the key(letter) out, followed by a space
-                System.out.print(entry.getKey()+" ");
-            }
-        }
+        // return the anonymous array
+        return new int[]{max, min};
     }
 }
